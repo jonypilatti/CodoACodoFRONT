@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <img
-      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5-ys9Q_AWJwean5ovhpAYMRS50Ka72fT4F9URtVGIeg85cwxrZ2d71Xs4qkxJjTNgXk&usqp=CAU"
+      src="https://cdn.dribbble.com/userupload/7405758/file/original-9cebaa4195dc877d7f0e200bf9478044.jpg?resize=400x0"
       alt="Logo"
       width="200px"
       height="80px"
