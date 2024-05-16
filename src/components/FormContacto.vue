@@ -100,12 +100,15 @@
           class="form-input"
           aria-describedby="image-info"
         />
-        <div id="image-info" class="form-info">
-          Puede subir una imagen relacionada con su consulta.
+        <div id="image-info" class="form-info" :class="{ 'error-message': imageError }">
+          {{ imageInfo }}
         </div>
       </div>
       <button type="submit" class="submit-btn">Enviar</button>
     </form>
+    <div v-if="showErrorMessage" class="error-title" role="alert" aria-live="polite">
+      <p>Por favor seleccione un formato de imagen válido</p>
+    </div>
     <div v-if="showSuccessMessage" class="success-message" role="alert" aria-live="polite">
       <p>¡Gracias por tu envío!</p>
     </div>
@@ -144,6 +147,7 @@
   border: 1px solid #295264;
   border-radius: 4px;
   font-size: 16px;
+  color: #142433;
   background-color: #fff;
 }
 
@@ -189,6 +193,17 @@
   border-radius: 4px;
   text-align: center;
 }
+.is-invalid {
+  border-color: #bd2f28;
+}
+.error-title {
+  text-align: center;
+  font-size: 24px;
+  color: #bd2f28;
+}
+.error-message {
+  color: violet;
+}
 </style>
 <script>
 export default {
@@ -203,33 +218,59 @@ export default {
         newsletter: false,
         image: null
       },
+      imageInfo: 'Puede subir una imagen relacionada con su consulta.',
+      imageError: false,
       properties: [
         'Mansión de Lujo en la Costa',
         'Lujosa Villa Costera',
         'Chalet de Montaña Acogedor',
         'Residencia Urbana Vanguardista'
       ],
-      showSuccessMessage: false
+      showSuccessMessage: false,
+      showErrorMessage: false
     }
   },
   methods: {
+    handleImageUpload(event) {
+      const file = event.target.files[0]
+      const allowedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']
+
+      if (file && allowedFormats.includes(file.type)) {
+        this.form.image = file
+        this.imageInfo = 'Imagen válida seleccionada.'
+        this.imageError = false
+      } else if (file) {
+        this.form.image = null
+        this.imageInfo = 'Por favor, seleccione una imagen JPG, PNG, WEBP o SVG.'
+        this.imageError = true
+      } else {
+        this.form.image = null
+        this.imageInfo = 'Puede subir una imagen relacionada con su consulta.'
+        this.imageError = false
+      }
+    },
     submitForm() {
       if (this.validateForm()) {
         // Handle form submission logic here
-        console.log('Formulario enviado:', this.form)
+        console.log('Form submitted:', this.form)
         this.showSuccessMessage = true
+      } else {
+        alert('No se puede enviar el formulario')
       }
     },
     validateForm() {
       const { name, email, phone, message, property } = this.form
+      console.log(this.imageError, 'el image error')
       if (!name || !email || !phone || !message || !property) {
-        alert('Por favor complete todos los campos requeridos para continuar.')
+        alert('Por favor, complete todos los campos obligatorios.')
+        return false
+      }
+      if (this.imageError === true) {
+        console.log('deberia entrar aca')
+        this.showErrorMessage = true
         return false
       }
       return true
-    },
-    handleImageUpload(event) {
-      this.form.image = event.target.files[0]
     }
   }
 }
